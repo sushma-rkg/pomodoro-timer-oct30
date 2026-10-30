@@ -30,9 +30,7 @@ function show() {
   const mm = String(Math.floor(secs / 60)).padStart(2, '0');
   const ss = String(secs % 60).padStart(2, '0');
   timerEl.textContent = mm + ':' + ss;
-  const blur = 16 * remaining / duration;
-  art.style.setProperty('--blur', blur + 'px');
-  art.style.setProperty('--scale', 1 + blur / 80);
+  art.style.setProperty('--left', remaining / duration);
 }
 
 function format(ms) {
@@ -116,7 +114,10 @@ async function loadPainting() {
   const next = await pickPainting();
   if (thisLoad !== loadId) return;
   painting = next;
-  artImg.onload = () => { artImg.hidden = false; };
+  artImg.onload = () => {
+    art.style.setProperty('--ratio', artImg.naturalWidth / artImg.naturalHeight);
+    artImg.hidden = false;
+  };
   artImg.src = next.image;
 }
 

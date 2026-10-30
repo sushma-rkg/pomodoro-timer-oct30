@@ -23,16 +23,29 @@ body {
   flex: 0 0 52%;
   align-self: stretch;
   min-height: 0;
+  container-type: size;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-.art img {
+/* A box the same shape as the painting, as big as fits in the artwork area. The blur is clipped to it. */
+.frame {
+  container-type: size;
+  width: min(100cqw, calc(100cqh * var(--ratio, 1)));
+  height: min(100cqh, calc(100cqw / var(--ratio, 1)));
+  overflow: hidden;
+}
+
+/* --left is the share of time left (1 at the start, 0 at 00:00). Blur and zoom shrink with it. */
+.frame img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: blur(calc(var(--left, 1) * 12cqmin));
+  transform: scale(calc(1 + 0.48 * var(--left, 1)));
 }
 
 .panel {
