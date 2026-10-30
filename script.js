@@ -4,6 +4,8 @@ const art = document.querySelector('.art');
 const timerEl = document.querySelector('.timer');
 const mainBtn = document.getElementById('main-btn');
 const resetBtn = document.getElementById('reset-btn');
+const screen = document.querySelector('.screen');
+const panel = document.querySelector('.panel');
 
 let state = 'idle'; // idle, running, paused, done
 let remaining = DURATION;
@@ -20,14 +22,41 @@ function show() {
   art.style.setProperty('--scale', 1 + blur / 80);
 }
 
+// Placeholder details for now. Real ones from the Met come in a later step.
+function showDetails() {
+  const box = document.createElement('div');
+  box.className = 'label';
+  box.id = 'details';
+
+  const title = document.createElement('strong');
+  title.textContent = 'Painting name';
+  const artist = document.createElement('span');
+  artist.textContent = 'Artist name';
+  const year = document.createElement('span');
+  year.textContent = 'Year';
+  const link = document.createElement('a');
+  link.href = 'https://www.metmuseum.org/';
+  link.target = '_blank';
+  link.rel = 'noopener';
+  link.textContent = 'Read about this painting';
+
+  box.append(title, artist, year, link);
+  panel.append(box);
+}
+
+function finish() {
+  clearInterval(interval);
+  state = 'done';
+  screen.classList.add('done');
+  mainBtn.textContent = 'Restart session';
+  resetBtn.hidden = true;
+  showDetails();
+}
+
 function tick() {
   remaining = Math.max(0, endTime - Date.now());
-  if (remaining === 0) {
-    state = 'done';
-    clearInterval(interval);
-    mainBtn.disabled = true;
-  }
   show();
+  if (remaining === 0) finish();
 }
 
 function start() {
@@ -51,12 +80,16 @@ function reset() {
   state = 'idle';
   remaining = DURATION;
   mainBtn.textContent = 'Start';
-  mainBtn.disabled = false;
+  resetBtn.hidden = false;
+  screen.classList.remove('done');
+  const details = document.getElementById('details');
+  if (details) details.remove();
   show();
 }
 
 mainBtn.addEventListener('click', () => {
   if (state === 'running') pause();
+  else if (state === 'done') reset();
   else start();
 });
 resetBtn.addEventListener('click', reset);

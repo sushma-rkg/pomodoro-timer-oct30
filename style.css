@@ -65,6 +65,19 @@ body {
 .btn.main { background: #f1a687; color: #4a2c1e; }
 .btn.alt { background: #f0e3d4; color: #6b564a; }
 
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: .95em;
+}
+
+.label strong { font-size: 1.15em; }
+.label span { color: #8a7a6e; }
+.label a { color: #b25f3d; margin-top: 2px; }
+
+.screen.done .timer { font-size: 36px; }
+
 /* Phone-sized screens: painting on top, timer below */
 @media (max-width: 700px) {
   body { font-size: 13px; }
@@ -91,4 +104,8 @@ body {
   }
 
   .timer { font-size: 56px; }
+
+  .screen.done .art { height: 190px; }
+  .screen.done .panel { gap: 8px; }
+  .screen.done .timer { font-size: 40px; }
 }
