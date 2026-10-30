@@ -1,4 +1,4 @@
-const DURATION = 25 * 60 * 1000;
+const DURATION = 30 * 1000; // temporary test length, normal is 25 * 60 * 1000
 
 const art = document.querySelector('.art');
 const timerEl = document.querySelector('.timer');
