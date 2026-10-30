@@ -1,4 +1,4 @@
-const DEFAULT = 30 * 1000; // temporary test length, normal is 25 * 60 * 1000
+const DEFAULT = 25 * 60 * 1000;
 const MIN = 30 * 1000;
 const MAX = 120 * 60 * 1000;
 
