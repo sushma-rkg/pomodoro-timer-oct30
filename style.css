@@ -49,6 +49,40 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+.setter {
+  display: flex;
+  gap: 10px;
+}
+
+.setter label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: .9em;
+  color: #8a7a6e;
+}
+
+.setter input {
+  width: 76px;
+  border: 1.5px solid #e6d6c3;
+  border-radius: 14px;
+  background: #fffaf3;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 1.1em;
+  color: #4a3f38;
+  text-align: center;
+}
+
+.setter input:focus-visible { outline: 2px solid #f1a687; outline-offset: 1px; }
+.setter input:disabled { background: #f3ece2; color: #b3a79b; }
+
+.msg {
+  margin: 0;
+  min-height: 1.3em;
+  color: #b25f3d;
+}
+
 .btns {
   display: flex;
   gap: 10px;
