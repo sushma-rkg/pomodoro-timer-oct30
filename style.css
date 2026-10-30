@@ -1,7 +1,186 @@
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  min-height: 100vh;
+  background: #faf3ea;
+  color: #4a3f38;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.screen {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 28px;
+}
+
+.art {
+  flex: 0 0 52%;
+  align-self: stretch;
+  min-height: 0;
+  container-type: size;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+.art { position: relative; }
+
+.art-msg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 16px;
+  text-align: center;
+  color: #8a7a6e;
+}
+
+.art-msg:empty { display: none; }
+.art-msg.calm { font-size: 1.15em; line-height: 1.5; }
+
+/* A box the same shape as the painting, as big as fits in the artwork area. The blur is clipped to it. */
+.frame {
+  container-type: size;
+  width: min(100cqw, calc(100cqh * var(--ratio, 1)));
+  height: min(100cqh, calc(100cqw / var(--ratio, 1)));
+  overflow: hidden;
+}
+
+/* --left is the share of time left (1 at the start, 0 at 00:00). Blur and zoom shrink with it. */
+.frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: blur(calc(var(--left, 1) * 12cqmin));
+  transform: scale(calc(1 + 0.48 * var(--left, 1)));
+}
+
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.timer {
+  font-size: 52px;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-btn {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 2px dashed #d9c5ad;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.timer-btn[hidden] { display: none; }
+.timer-btn .pencil { margin-top: 10px; color: #b0a090; }
+.timer-btn:focus-visible { outline: 2px solid #f1a687; outline-offset: 4px; }
+.timer-btn:disabled { border-bottom-color: transparent; cursor: default; }
+.timer-btn:disabled .pencil { visibility: hidden; }
+
+.timer-input {
+  width: 6.4ch;
+  border: 2px dashed #f1a687;
+  border-radius: 14px;
+  background: #fffaf3;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 52px;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  color: #4a3f38;
+}
+
+.timer-input:focus-visible { outline: none; }
+
+.msg {
+  margin: 0;
+  min-height: 1.3em;
+  color: #b25f3d;
+}
+
+.btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font: inherit;
+  font-weight: 600;
+}
+
+.btn.main { background: #f1a687; color: #4a2c1e; }
+.btn.alt { background: #f0e3d4; color: #6b564a; }
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: .95em;
+}
+
+.label { overflow-wrap: anywhere; }
+.label strong { font-size: 1.15em; }
+.label span { color: #8a7a6e; }
+.label a { color: #b25f3d; margin-top: 2px; }
+
+.screen.done .timer { font-size: 36px; }
+
+/* Phone-sized screens: painting on top, timer below */
+@media (max-width: 700px) {
+  body { font-size: 13px; }
+
+  .screen {
+    height: auto;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .art {
+    flex: none;
+    align-self: auto;
+    width: 100%;
+    height: 250px;
+  }
+
+  .panel {
+    flex: none;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .timer { font-size: 56px; }
+  .timer-input { font-size: 56px; text-align: center; }
+
+  .screen.done .art { height: 190px; }
+  .screen.done .panel { gap: 8px; }
+  .screen.done .timer { font-size: 40px; }
 }
