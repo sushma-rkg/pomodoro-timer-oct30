@@ -2,7 +2,11 @@ const DEFAULT = 25 * 60 * 1000;
 const MIN = 30 * 1000;
 const MAX = 120 * 60 * 1000;
 
+const SEARCH_URL = 'https://collectionapi.metmuseum.org/public/collection/v1.1/search';
+const OBJECT_URL = 'https://collectionapi.metmuseum.org/public/collection/v1/objects/';
+
 const art = document.querySelector('.art');
+const artImg = document.getElementById('art-img');
 const timerEl = document.querySelector('.timer');
 const mainBtn = document.getElementById('main-btn');
 const resetBtn = document.getElementById('reset-btn');
@@ -18,6 +22,8 @@ let remaining = DEFAULT;
 let endTime = 0;
 let interval = null;
 let editing = false;
+let painting = null; // kept in memory only, shown once the timer finishes
+let loadId = 0;
 
 function show() {
   const secs = Math.ceil(remaining / 1000);
@@ -78,20 +84,56 @@ function commitEdit() {
   show();
 }
 
-// Placeholder details for now. Real ones from the Met come in a later step.
+async function fetchJson(url) {
+  const response = await fetch(url);
+  return response.json();
+}
+
+// Picks a random public domain painting that has an image. If one does not qualify, quietly tries another.
+async function pickPainting() {
+  const offset = Math.floor(Math.random() * 9500);
+  const search = await fetchJson(SEARCH_URL + '?hasImages=true&medium=Paintings&limit=500&offset=' + offset);
+  while (true) {
+    const id = search.objectIDs[Math.floor(Math.random() * search.objectIDs.length)];
+    const record = await fetchJson(OBJECT_URL + id);
+    if (record.isPublicDomain && record.primaryImageSmall && record.classification.includes('Painting')) {
+      return {
+        image: record.primaryImageSmall,
+        title: record.title,
+        artist: record.artistDisplayName || 'Unknown',
+        year: record.objectDate || 'Unknown',
+        url: record.objectURL,
+      };
+    }
+  }
+}
+
+async function loadPainting() {
+  const thisLoad = ++loadId;
+  painting = null;
+  artImg.hidden = true;
+  artImg.removeAttribute('src');
+  const next = await pickPainting();
+  if (thisLoad !== loadId) return;
+  painting = next;
+  artImg.onload = () => { artImg.hidden = false; };
+  artImg.src = next.image;
+}
+
 function showDetails() {
+  if (!painting) return;
   const box = document.createElement('div');
   box.className = 'label';
   box.id = 'details';
 
   const title = document.createElement('strong');
-  title.textContent = 'Painting name';
+  title.textContent = painting.title;
   const artist = document.createElement('span');
-  artist.textContent = 'Artist name';
+  artist.textContent = painting.artist;
   const year = document.createElement('span');
-  year.textContent = 'Year';
+  year.textContent = painting.year;
   const link = document.createElement('a');
-  link.href = 'https://www.metmuseum.org/';
+  link.href = painting.url;
   link.target = '_blank';
   link.rel = 'noopener';
   link.textContent = 'Read about this painting';
@@ -150,7 +192,7 @@ function reset() {
 
 mainBtn.addEventListener('click', () => {
   if (state === 'running') pause();
-  else if (state === 'done') reset();
+  else if (state === 'done') { reset(); loadPainting(); }
   else start();
 });
 resetBtn.addEventListener('click', reset);
@@ -166,3 +208,4 @@ document.addEventListener('visibilitychange', () => {
 });
 
 show();
+loadPainting();
