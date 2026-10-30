@@ -10,11 +10,11 @@
   <main class="screen">
     <div class="art" aria-hidden="true"><i></i></div>
     <div class="panel">
-      <div class="timer">25:00</div>
-      <div class="setter">
-        <label>Minutes <input id="min-input" type="text" inputmode="numeric" autocomplete="off" value="25"></label>
-        <label>Seconds <input id="sec-input" type="text" inputmode="numeric" autocomplete="off" value="00"></label>
-      </div>
+      <button class="timer-btn" id="timer-btn" type="button" aria-label="Edit timer length">
+        <span class="timer">25:00</span>
+        <svg class="pencil" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>
+      </button>
+      <input class="timer-input" id="timer-input" type="text" inputmode="numeric" autocomplete="off" aria-label="Timer length, like 10:00" hidden>
       <p class="msg" id="msg" role="status"></p>
       <div class="btns">
         <button class="btn main" id="main-btn" type="button">Start</button>

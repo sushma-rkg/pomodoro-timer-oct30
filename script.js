@@ -8,8 +8,8 @@ const mainBtn = document.getElementById('main-btn');
 const resetBtn = document.getElementById('reset-btn');
 const screen = document.querySelector('.screen');
 const panel = document.querySelector('.panel');
-const minInput = document.getElementById('min-input');
-const secInput = document.getElementById('sec-input');
+const timerBtn = document.getElementById('timer-btn');
+const timerInput = document.getElementById('timer-input');
 const msg = document.getElementById('msg');
 
 let state = 'idle'; // idle, running, paused, done
@@ -17,6 +17,7 @@ let duration = DEFAULT;
 let remaining = DEFAULT;
 let endTime = 0;
 let interval = null;
+let editing = false;
 
 function show() {
   const secs = Math.ceil(remaining / 1000);
@@ -28,25 +29,22 @@ function show() {
   art.style.setProperty('--scale', 1 + blur / 80);
 }
 
-function fillBoxes() {
-  const total = duration / 1000;
-  minInput.value = Math.floor(total / 60);
-  secInput.value = String(total % 60).padStart(2, '0');
+function format(ms) {
+  const total = Math.ceil(ms / 1000);
+  return String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
 }
 
-function lockBoxes(locked) {
-  minInput.disabled = locked;
-  secInput.disabled = locked;
+function lockTimer(locked) {
+  timerBtn.disabled = locked;
 }
 
-function readLength() {
-  const m = minInput.value.trim();
-  const sec = secInput.value.trim();
-  if (!/^\d+$/.test(m) || !/^\d+$/.test(sec)) {
-    msg.textContent = 'Please use whole numbers, like 10 and 00.';
+function readLength(text) {
+  const match = /^(\d+):(\d+)$/.exec(text.trim());
+  if (!match) {
+    msg.textContent = 'Please type the time like 10:00.';
     return;
   }
-  const ms = (Number(m) * 60 + Number(sec)) * 1000;
+  const ms = (Number(match[1]) * 60 + Number(match[2])) * 1000;
   if (ms < MIN || ms > MAX) {
     msg.textContent = 'Please pick a time from 00:30 to 120:00.';
     return;
@@ -55,11 +53,28 @@ function readLength() {
   duration = ms;
 }
 
-function changeLength() {
+function startEditing() {
   if (state !== 'idle') return;
-  readLength();
+  editing = true;
+  timerInput.value = format(duration);
+  timerBtn.hidden = true;
+  timerInput.hidden = false;
+  timerInput.focus();
+  timerInput.select();
+}
+
+function stopEditing() {
+  editing = false;
+  timerInput.hidden = true;
+  timerBtn.hidden = false;
+}
+
+function commitEdit() {
+  if (!editing) return;
+  const text = timerInput.value;
+  stopEditing();
+  readLength(text);
   remaining = duration;
-  fillBoxes();
   show();
 }
 
@@ -101,8 +116,8 @@ function tick() {
 }
 
 function start() {
-  changeLength();
-  lockBoxes(true);
+  commitEdit();
+  lockTimer(true);
   endTime = Date.now() + remaining;
   state = 'running';
   mainBtn.textContent = 'Pause';
@@ -124,8 +139,7 @@ function reset() {
   duration = DEFAULT;
   remaining = DEFAULT;
   msg.textContent = '';
-  fillBoxes();
-  lockBoxes(false);
+  lockTimer(false);
   mainBtn.textContent = 'Start';
   resetBtn.hidden = false;
   screen.classList.remove('done');
@@ -140,17 +154,15 @@ mainBtn.addEventListener('click', () => {
   else start();
 });
 resetBtn.addEventListener('click', reset);
-// Check the length only once the person has left both boxes, so a half-edited time is not rejected.
-document.querySelector('.setter').addEventListener('focusout', (e) => {
-  if (!e.currentTarget.contains(e.relatedTarget)) changeLength();
-});
-document.querySelector('.setter').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') changeLength();
+timerBtn.addEventListener('click', startEditing);
+timerInput.addEventListener('blur', commitEdit);
+timerInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') commitEdit();
+  if (e.key === 'Escape') stopEditing();
 });
 
 document.addEventListener('visibilitychange', () => {
   if (state === 'running') tick();
 });
 
-fillBoxes();
 show();

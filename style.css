@@ -49,33 +49,39 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.setter {
-  display: flex;
+.timer-btn {
+  display: inline-flex;
+  align-items: flex-start;
   gap: 10px;
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 2px dashed #d9c5ad;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
 
-.setter label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: .9em;
-  color: #8a7a6e;
-}
+.timer-btn[hidden] { display: none; }
+.timer-btn .pencil { margin-top: 10px; color: #b0a090; }
+.timer-btn:focus-visible { outline: 2px solid #f1a687; outline-offset: 4px; }
+.timer-btn:disabled { border-bottom-color: transparent; cursor: default; }
+.timer-btn:disabled .pencil { visibility: hidden; }
 
-.setter input {
-  width: 76px;
-  border: 1.5px solid #e6d6c3;
+.timer-input {
+  width: 6.4ch;
+  border: 2px dashed #f1a687;
   border-radius: 14px;
   background: #fffaf3;
-  padding: 8px 12px;
+  padding: 0 8px;
   font: inherit;
-  font-size: 1.1em;
+  font-size: 52px;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
   color: #4a3f38;
-  text-align: center;
 }
 
-.setter input:focus-visible { outline: 2px solid #f1a687; outline-offset: 1px; }
-.setter input:disabled { background: #f3ece2; color: #b3a79b; }
+.timer-input:focus-visible { outline: none; }
 
 .msg {
   margin: 0;
@@ -138,6 +144,7 @@ body {
   }
 
   .timer { font-size: 56px; }
+  .timer-input { font-size: 56px; text-align: center; }
 
   .screen.done .art { height: 190px; }
   .screen.done .panel { gap: 8px; }
