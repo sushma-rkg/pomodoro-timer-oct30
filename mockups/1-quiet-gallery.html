@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup: Quiet Gallery</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px 16px 48px; background: #e8e8e8; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #333; }
+header, h2 { text-align: center; }
+h1 { margin: 0 0 4px; font-size: 26px; }
+header p { margin: 0 0 8px; color: #666; }
+h2 { margin: 32px 0 12px; font-size: 18px; }
+.row { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+figure { margin: 0; }
+figcaption { text-align: center; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+.screen { position: relative; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,.18); font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.laptop { width: 620px; height: 400px; font-size: 14px; border-radius: 10px; }
+.phone { width: 280px; height: 560px; font-size: 13px; border-radius: 28px; border: 6px solid #222; }
+.art { overflow: hidden; }
+.art i { display: block; width: 100%; height: 100%; background: linear-gradient(135deg, #f0c27b 0%, #d4825f 45%, #4b6a85 100%); }
+.start .art i, .run .art i { filter: blur(16px); transform: scale(1.2); }
+.run .art i { filter: blur(7px); }
+.btn { display: inline-block; border-radius: 999px; font-weight: 600; }
+.timer { font-variant-numeric: tabular-nums; }
+.label a { color: inherit; }
+
+
+.screen { background: #f6f1e7; color: #3b3a36; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; }
+.laptop .art { width: 150px; height: 112px; border-radius: 4px; box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+.phone .art { width: 82%; aspect-ratio: 4/3; border-radius: 4px; box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+.timer { font-weight: 200; letter-spacing: 2px; }
+.laptop .timer { font-size: 54px; } .phone .timer { font-size: 56px; }
+.btns { display: flex; gap: 10px; }
+.btn { padding: 9px 22px; }
+.btn.main { background: #7f9a8d; color: #fff; }
+.btn.alt { border: 1.5px solid #7f9a8d; color: #5d776a; }
+.label { display: flex; flex-direction: column; gap: 2px; padding-top: 8px; border-top: 1px solid #d8d0bf; width: 62%; font-size: .95em; }
+.label span { color: #7a766c; }
+.label a { color: #5d776a; margin-top: 2px; }
+.laptop.done { gap: 6px; } .laptop.done .art { width: 130px; height: 98px; } .laptop.done .timer { font-size: 36px; }
+.phone.done .timer { font-size: 44px; }
+
+</style>
+</head>
+<body>
+<header><h1>Quiet Gallery</h1><p>Cream wall, centred painting, thin numbers, sage pill buttons</p></header>
+<h2>Laptop-sized screen</h2>
+<div class="row">
+<figure><figcaption>Before starting</figcaption>
+<div class="screen laptop start">
+<div class="art"><i></i></div>
+<div class="timer">25:00</div>
+<div class="btns"><span class="btn main">Start</span><span class="btn alt">Reset</span></div>
+
+</div></figure>
+<figure><figcaption>Timer running</figcaption>
+<div class="screen laptop run">
+<div class="art"><i></i></div>
+<div class="timer">14:32</div>
+<div class="btns"><span class="btn main">Pause</span><span class="btn alt">Reset</span></div>
+
+</div></figure>
+<figure><figcaption>Timer finished</figcaption>
+<div class="screen laptop done">
+<div class="art"><i></i></div>
+<div class="timer">00:00</div>
+<div class="btns"><span class="btn main">Restart session</span></div>
+<div class="label"><strong>Sunflowers</strong><span>Vincent van Gogh</span><span>1887</span><a href="#">Read about this painting</a></div>
+</div></figure>
+</div>
+<h2>Phone-sized screen</h2>
+<div class="row">
+<figure><figcaption>Before starting</figcaption>
+<div class="screen phone start">
+<div class="art"><i></i></div>
+<div class="timer">25:00</div>
+<div class="btns"><span class="btn main">Start</span><span class="btn alt">Reset</span></div>
+
+</div></figure>
+<figure><figcaption>Timer running</figcaption>
+<div class="screen phone run">
+<div class="art"><i></i></div>
+<div class="timer">14:32</div>
+<div class="btns"><span class="btn main">Pause</span><span class="btn alt">Reset</span></div>
+
+</div></figure>
+<figure><figcaption>Timer finished</figcaption>
+<div class="screen phone done">
+<div class="art"><i></i></div>
+<div class="timer">00:00</div>
+<div class="btns"><span class="btn main">Restart session</span></div>
+<div class="label"><strong>Sunflowers</strong><span>Vincent van Gogh</span><span>1887</span><a href="#">Read about this painting</a></div>
+</div></figure>
+</div>
+</body>
+</html>
