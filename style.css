@@ -1,7 +1,94 @@
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
+  background: #faf3ea;
+  color: #4a3f38;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.screen {
   min-height: 100vh;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 28px;
+  padding: 28px;
+}
+
+.art {
+  flex: 0 0 52%;
+  align-self: stretch;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.art i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f0c27b 0%, #d4825f 45%, #4b6a85 100%);
+  filter: blur(16px);
+  transform: scale(1.2);
+}
+
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.timer {
+  font-size: 52px;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+
+.btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font: inherit;
+  font-weight: 600;
+}
+
+.btn.main { background: #f1a687; color: #4a2c1e; }
+.btn.alt { background: #f0e3d4; color: #6b564a; }
+
+/* Phone-sized screens: painting on top, timer below */
+@media (max-width: 700px) {
+  body { font-size: 13px; }
+
+  .screen {
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .art {
+    flex: none;
+    align-self: auto;
+    width: 100%;
+    height: 250px;
+  }
+
+  .panel {
+    flex: none;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .timer { font-size: 56px; }
 }
