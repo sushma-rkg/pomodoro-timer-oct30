@@ -9,6 +9,7 @@ const OBJECT_URL = 'https://collectionapi.metmuseum.org/public/collection/v1/obj
 
 const art = document.querySelector('.art');
 const artImg = document.getElementById('art-img');
+const artMsg = document.getElementById('art-msg');
 const timerEl = document.querySelector('.timer');
 const mainBtn = document.getElementById('main-btn');
 const resetBtn = document.getElementById('reset-btn');
@@ -84,29 +85,62 @@ function commitEdit() {
   show();
 }
 
+const TIMEOUT = 10000; // how long the Met gets to answer, per request
+const MAX_TRIES = 5; // how many different paintings to try
+const LOADING_TEXT = 'Loading painting…';
+const FAILED_TEXT = "We couldn't load a painting right now. You can still use the timer. Refresh the page to try again.";
+
+function setArtMessage(text, calm) {
+  artMsg.textContent = text;
+  artMsg.classList.toggle('calm', Boolean(calm));
+}
+
 async function fetchJson(url) {
-  const response = await fetch(url);
+  const response = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT) });
+  if (!response.ok) throw new Error('The Met answered with an error');
   return response.json();
 }
 
-// Picks a random public domain painting that has an image. If one does not qualify, quietly tries another.
+// Resolves with the loaded image, or rejects if it fails or takes too long.
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const timer = setTimeout(() => reject(new Error('Image took too long')), TIMEOUT);
+    img.onload = () => { clearTimeout(timer); resolve(img); };
+    img.onerror = () => { clearTimeout(timer); reject(new Error('Image did not load')); };
+    img.src = url;
+  });
+}
+
+// Picks a random public domain painting that has an image that loads.
+// A record that does not qualify is quietly skipped, up to MAX_TRIES paintings. Returns null if none work.
+// If the Met does not answer or returns an error, this throws.
 async function pickPainting() {
   const { total } = await fetchJson(SEARCH_URL + '&limit=1');
   const offset = Math.floor(Math.random() * Math.max(1, total - PAGE + 1));
-  const search = await fetchJson(SEARCH_URL + '&limit=' + PAGE + '&offset=' + offset);
-  while (true) {
-    const id = search.objectIDs[Math.floor(Math.random() * search.objectIDs.length)];
+  const { objectIDs } = await fetchJson(SEARCH_URL + '&limit=' + PAGE + '&offset=' + offset);
+  const ids = (objectIDs || []).slice();
+
+  for (let tries = 0; tries < MAX_TRIES && ids.length > 0; tries++) {
+    const id = ids.splice(Math.floor(Math.random() * ids.length), 1)[0];
     const record = await fetchJson(OBJECT_URL + id);
-    if (record.isPublicDomain && record.primaryImageSmall && record.classification.includes('Painting')) {
+    const isPainting = String(record.classification || '').includes('Painting');
+    if (!record.isPublicDomain || !isPainting || !record.primaryImageSmall) continue;
+    try {
+      const img = await loadImage(record.primaryImageSmall);
       return {
         image: record.primaryImageSmall,
+        ratio: img.naturalWidth / img.naturalHeight,
         title: record.title,
         artist: record.artistDisplayName || 'Unknown',
         year: record.objectDate || 'Unknown',
         url: record.objectURL,
       };
+    } catch (error) {
+      continue; // the image did not load, so try another painting
     }
   }
+  return null;
 }
 
 async function loadPainting() {
@@ -114,11 +148,24 @@ async function loadPainting() {
   painting = null;
   artImg.hidden = true;
   artImg.removeAttribute('src');
-  const next = await pickPainting();
+  setArtMessage(LOADING_TEXT);
+
+  let next = null;
+  try {
+    next = await pickPainting();
+  } catch (error) {
+    next = null; // the Met is not responding
+  }
   if (thisLoad !== loadId) return;
+
+  if (!next) {
+    setArtMessage(FAILED_TEXT, true);
+    return;
+  }
   painting = next;
+  art.style.setProperty('--ratio', next.ratio);
   artImg.onload = () => {
-    art.style.setProperty('--ratio', artImg.naturalWidth / artImg.naturalHeight);
+    setArtMessage('');
     artImg.hidden = false;
   };
   artImg.src = next.image;
