@@ -2,7 +2,9 @@ const DEFAULT = 25 * 60 * 1000;
 const MIN = 30 * 1000;
 const MAX = 120 * 60 * 1000;
 
-const SEARCH_URL = 'https://collectionapi.metmuseum.org/public/collection/v1.1/search';
+// Department 11 is European Paintings, so almost every result is a real painting with an image.
+const SEARCH_URL = 'https://collectionapi.metmuseum.org/public/collection/v1.1/search?departmentId=11&hasImages=true&medium=Paintings';
+const PAGE = 500;
 const OBJECT_URL = 'https://collectionapi.metmuseum.org/public/collection/v1/objects/';
 
 const art = document.querySelector('.art');
@@ -89,8 +91,9 @@ async function fetchJson(url) {
 
 // Picks a random public domain painting that has an image. If one does not qualify, quietly tries another.
 async function pickPainting() {
-  const offset = Math.floor(Math.random() * 9500);
-  const search = await fetchJson(SEARCH_URL + '?hasImages=true&medium=Paintings&limit=500&offset=' + offset);
+  const { total } = await fetchJson(SEARCH_URL + '&limit=1');
+  const offset = Math.floor(Math.random() * Math.max(1, total - PAGE + 1));
+  const search = await fetchJson(SEARCH_URL + '&limit=' + PAGE + '&offset=' + offset);
   while (true) {
     const id = search.objectIDs[Math.floor(Math.random() * search.objectIDs.length)];
     const record = await fetchJson(OBJECT_URL + id);
